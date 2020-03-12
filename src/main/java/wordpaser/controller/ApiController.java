@@ -15,6 +15,7 @@ import wordpaser.util.CacheManager;
 import wordpaser.util.IO;
 import wordpaser.util.U;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
@@ -76,6 +77,25 @@ public class ApiController {
     }
 
 
+    @RequestMapping("/export/{key}")
+    public void export(@PathVariable("key") String key,HttpServletResponse response) throws IOException {
+        if(CacheManager.getCache(key) == null){
+            IO.send404(response);
+        } else {
+            Map<String, Object> paper = CacheManager.getCache(key);
+            List<Question> qList = (List<Question>) paper.get("Q");
+            List<Answer> aList = (List<Answer>) paper.get("A");
+            String s = U.genJson(qList, aList);
+            response.setContentType("application/octet-stream;charset=UTF-8");
+            response.setHeader("Content-Disposition", "attachment;filename=paper.json");
+            response.addHeader("Pargam", "no-cache");
+            response.addHeader("Cache-Control", "no-cache");
+            ServletOutputStream out = response.getOutputStream();
+            out.write(s.getBytes("utf-8"));
+            out.flush();
+        }
+    }
+
     @RequestMapping("/show/{key}")
     public void parsePaper(@PathVariable("key") String key,HttpServletResponse response) throws IOException{
         if(CacheManager.getCache(key) == null) {
@@ -84,7 +104,7 @@ public class ApiController {
             Map<String, Object> paper = CacheManager.getCache(key);
             List<Question> qList = (List<Question>) paper.get("Q");
             List<Answer> aList = (List<Answer>) paper.get("A");
-            String s = U.genViewHtml(qList, aList);
+            String s = U.genViewHtml(qList, aList, key);
             IO.sendHTML(response, s);
         }
     }

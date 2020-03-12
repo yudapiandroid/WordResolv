@@ -67,15 +67,17 @@ public class IO {
     public static void sendResource(HttpServletResponse res, byte[] content, String type) throws IOException {
         if("css".equals(type)){
             res.setContentType("text/css");
-        }
+        } else
         if("png".equals(type) || "jpg".equals(type) || "jpeg".equals(type) || "gif".equals(type)){
             res.setContentType("image/" + type);
-        }
+        } else
         if("ico".equals(type)){
             res.setContentType("x-icon");
-        }
+        } else
         if("js".equals(type)){
             res.setContentType("application/javascript; charset=utf-8");
+        } else {
+            res.setContentType("application/octet-stream");
         }
         res.setHeader("Cache-Control", "max-age=" + CACHE_MAX_AGE);
         res.getOutputStream().write(content);

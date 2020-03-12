@@ -1,5 +1,6 @@
 package wordpaser.util;
 
+import com.alibaba.fastjson.JSON;
 import wordpaser.entry.*;
 import org.apache.commons.codec.binary.Base64;
 import org.w3c.dom.Document;
@@ -57,7 +58,19 @@ public class U {
     }
 
 
-    public static String genViewHtml(List<Question> qs, List<Answer> as) throws IOException {
+    public static String genJson(List<Question> qs, List<Answer> as) {
+        guestQuestionType(qs, as);
+        for (Question q : qs) {
+            int index = q.getIndex();
+            String qc = "";
+            int tempIndex = 0;
+            Answer answer = loadAnswerByIndex(as, q.getIndex());
+            q.setAnswer(answer);
+        }
+        return JSON.toJSONString(qs);
+    }
+
+    public static String genViewHtml(List<Question> qs, List<Answer> as, String key) throws IOException {
         String Q_CHOSE_ITEM = new String(loadResFromClassPath("static/component/q_chose_item.html"));
         String Q_ITEM = new String(loadResFromClassPath("static/component/q_item.html"));
         String TEMPL = new String(loadResFromClassPath("static/paper_view.html"));
@@ -159,6 +172,7 @@ public class U {
                 noTypeQuestionHtml += T_INFO_ITEM.replaceAll("::number", q.getIndex() + "");
             }
         }
+
         String questionTypeHtml = T_INFO.replaceAll("::title", "判断题")
                 .replaceAll("::items", jumTypeQuestionHtml);
         questionTypeHtml += T_INFO.replaceAll("::title", "单选题")
@@ -171,6 +185,8 @@ public class U {
         // 避免内存泄漏
         idToFile.clear();
         return TEMPL.replaceAll("::questions", qHtml)
+                .replaceAll("::key", key)
+                .replaceAll("::total_number", String.valueOf(qs.size()))
                 .replaceAll("::total_info_", questionTypeHtml)
                 .replaceAll("::result_info", resultInfo);
     }

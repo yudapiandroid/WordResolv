@@ -19,6 +19,17 @@ public class Question implements Serializable {
     private int index;
     private int type;
 
+
+    private Answer answer;
+
+    public Answer getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(Answer answer) {
+        this.answer = answer;
+    }
+
     public int getType() {
         return type;
     }
