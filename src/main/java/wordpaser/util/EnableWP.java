@@ -3,6 +3,6 @@ package wordpaser.util;
 
 import org.springframework.context.annotation.ComponentScan;
 
-@ComponentScan({"wordpaser"})
+@ComponentScan(basePackages = {"wordpaser"})
 public @interface EnableWP {
 }
