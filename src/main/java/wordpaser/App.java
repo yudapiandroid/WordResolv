@@ -72,7 +72,7 @@ public class App {
         List<Answer> answers = U.parseAnswerByNodes(anNodes);
         List<Question> qs = U.parseQuestionByNodes(pNodes);
 
-        U.writeToFile(U.genViewHtml(qs,answers),"C:\\Users\\dapi\\Desktop\\demo.html");
+        //U.writeToFile(U.genViewHtml(qs,answers),"C:\\Users\\dapi\\Desktop\\demo.html");
     }
 
 
